@@ -4,7 +4,7 @@ import ShopPage from "../../Pages/Shop/Shop";
 import Signin_Signup from "../../Pages/Signin-Signup/Signin_Signup";
 import Header from "../Header/Header";
 import { Route, Switch } from "react-router-dom";
-import { auth } from "../../Firebase/firebase.util";
+import { auth, createUserProfile } from "../../Firebase/firebase.util";
 
 import "./App.scss";
 
@@ -16,9 +16,21 @@ class App extends React.Component {
   unSubcribeUser = null;
 
   componentDidMount() {
-    this.unSubcribeUser = auth.onAuthStateChanged((user) => {
-      this.setState({ currentUser: user });
-      // console.log(user);
+    this.unSubcribeUser = auth.onAuthStateChanged(async (userData) => {
+      const userRef = await createUserProfile(userData);
+      if (userRef) {
+        userRef.onSnapshot((snapshot) => {
+          // data inside snapshot can be accessed only via .data()
+          return this.setState({
+            currentUser: {
+              // use onSnapShot method to listen to any change in the data
+              ...snapshot.data(),
+            },
+          });
+        });
+      } else {
+        this.setState({ currentUser: userData });
+      }
     });
   }
 

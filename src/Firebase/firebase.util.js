@@ -14,9 +14,37 @@ const config = {
 
 firebase.initializeApp(config);
 
+export const createUserProfile = async (userData, addtionalData) => {
+  if (!userData) return;
+
+  //   reference doesnot post request to server but simply return an object
+  const userRef = firestore.doc(`users/${userData.uid}`);
+
+  //   snapshot is where data can be fetched. use get() on reference object to fetch data
+  const userSnapshot = await userRef.get();
+
+  if (!userSnapshot.exists) {
+    const { displayName, email, uid } = userData;
+    const createdAt = new Date();
+
+    try {
+      // use set() to add data to database
+      await userRef.set({
+        uid,
+        displayName,
+        email,
+        createdAt,
+        ...addtionalData,
+      });
+    } catch (error) {
+      console.log("Something went wrong while creating user", error);
+    }
+  }
+  return userRef;
+};
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
-// console.log(auth);
 
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
