@@ -1,0 +1,19 @@
+.signin {
+  width: 35vw;
+
+  .title {
+    margin: 30px 0;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+
+    h2 {
+      margin-bottom: 10px;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+  }
+}
