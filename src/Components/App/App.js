@@ -5,31 +5,29 @@ import Signin_Signup from "../../Pages/Signin-Signup/Signin_Signup";
 import Header from "../Header/Header";
 import { Route, Switch } from "react-router-dom";
 import { auth, createUserProfile } from "../../Firebase/firebase.util";
+import { connect } from "react-redux";
+import currentUser from "../../redux/user/user.action";
 
 import "./App.scss";
 
 class App extends React.Component {
-  state = {
-    currentUser: null,
-  };
-
   unSubcribeUser = null;
 
   componentDidMount() {
+    const { currentUser } = this.props;
+
     this.unSubcribeUser = auth.onAuthStateChanged(async (userData) => {
       const userRef = await createUserProfile(userData);
       if (userRef) {
         userRef.onSnapshot((snapshot) => {
           // data inside snapshot can be accessed only via .data()
-          return this.setState({
-            currentUser: {
-              // use onSnapShot method to listen to any change in the data
-              ...snapshot.data(),
-            },
+          return currentUser({
+            // use onSnapShot method to listen to any change in the data
+            ...snapshot.data(),
           });
         });
       } else {
-        this.setState({ currentUser: userData });
+        currentUser(userData);
       }
     });
   }
@@ -41,7 +39,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/shop" component={ShopPage} />
@@ -52,4 +50,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default connect(null, { currentUser })(App);
