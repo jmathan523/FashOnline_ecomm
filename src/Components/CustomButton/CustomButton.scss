@@ -15,12 +15,13 @@
   border: none;
   cursor: pointer;
   transition: all 100ms;
-  margin-right: 20px;
+  // margin-right: 20px;
 
   &:hover {
     color: black;
     background-color: #ffff;
     border: 1px solid black;
+    box-shadow: 0 2px 12px lightgray;
   }
 
   &.google-sign-in {
