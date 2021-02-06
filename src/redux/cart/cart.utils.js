@@ -1,6 +1,6 @@
 // to group the same items in the cart. by adding a new property quantity
 
-const addItemToCart = (cartItems, newCartItem) => {
+export const addItemToCart = (cartItems, newCartItem) => {
   // check cart item already exists. returns array if match found
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === newCartItem.id
@@ -21,4 +21,23 @@ const addItemToCart = (cartItems, newCartItem) => {
   return [...cartItems, { ...newCartItem, quantity: 1 }];
 };
 
-export default addItemToCart;
+export const removeItemFromCart = (cartItems, cartItemToRemove) => {
+  const existingCartItem = cartItems.find(
+    (cartItem) => cartItem.id === cartItemToRemove.id
+  );
+
+  // console.log(existingCartItem);
+
+  if (existingCartItem.quantity === 1) {
+    return cartItems.filter((cartItem) => cartItem.id !== cartItemToRemove.id);
+  }
+
+  return cartItems.map((cartItem) =>
+    cartItem.id === cartItemToRemove.id
+      ? {
+          ...cartItem,
+          quantity: cartItem.quantity - 1,
+        }
+      : cartItem
+  );
+};
